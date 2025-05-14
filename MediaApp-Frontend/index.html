@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Marian Apparitions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Marian Apparitions</h1>
+    <table id="apparitions-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Approval Status</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody id="apparitions-body"></tbody>
+    </table>
+    <script>
+        fetch('http://localhost:8080/api/apparitions')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('apparitions-body');
+                data.forEach(apparition => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${apparition.name}</td>
+                        <td>${apparition.location}</td>
+                        <td>${apparition.date}</td>
+                        <td>${apparition.approvalStatus}</td>
+                        <td>${apparition.description}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching apparitions:', error));
+    </script>
+</body>
+</html>

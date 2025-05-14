@@ -1,0 +1,15 @@
+# IntelliJ files
+.idea/
+*.iml
+
+# Java build output
+target/
+*.class
+
+# Local database
+*.sql
+
+# Frontend (MediaApp-Frontend)
+MediaApp-Frontend/node_modules/
+MediaApp-Frontend/.vscode/
+

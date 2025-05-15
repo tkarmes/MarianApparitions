@@ -2,23 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marian Apparitions</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 40px;
+            margin: 20px;
             background-color: #f9f9f9;
+            color: #333;
         }
         h1, h2 {
             text-align: center;
-            color: #333;
+        }
+        .search-container, .form-container, .details-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .search-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-container label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        .form-container input, .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-container button, .action-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .form-container button:hover, .action-button:hover {
+            background-color: #45a049;
+        }
+        .action-button.delete {
+            background-color: #f44336;
+        }
+        .action-button.delete:hover {
+            background-color: #da190b;
         }
         table {
             border-collapse: collapse;
             width: 100%;
-            max-width: 1200px;
+            max-width: 800px;
             margin: 20px auto;
             background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         th, td {
@@ -37,42 +87,30 @@
         tr:hover {
             background-color: #e0e0e0;
         }
-        .form-container, .details-container, .search-container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .form-container label, .search-container label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        .form-container input, .form-container textarea, .search-container input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-        }
-        .form-container button, .action-button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            margin: 5px;
-        }
-        .form-container button:hover, .action-button:hover {
-            background-color: #45a049;
-        }
-        .action-button.delete {
-            background-color: #f44336;
-        }
-        .action-button.delete:hover {
-            background-color: #da190b;
-        }
         .details-container p {
             margin: 10px 0;
+        }
+        /* Responsive design */
+        @media (max-width: 600px) {
+            body {
+                margin: 10px;
+            }
+            .search-container, .form-container, .details-container, table {
+                max-width: 100%;
+                margin: 10px auto;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+            .action-button {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+            .form-container input, .form-container textarea, .search-container input {
+                padding: 8px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>

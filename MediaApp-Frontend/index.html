@@ -160,6 +160,7 @@
     </div>
     <script>
         // Load and filter apparitions
+        /*
         function loadApparitions(searchTerm = '') {
             fetch('http://localhost:8080/api/apparitions')
                 .then(response => response.json())
@@ -189,8 +190,10 @@
                 })
                 .catch(error => console.error('Error fetching apparitions:', error));
         }
+        */
 
         // Show details for an apparition
+        /*
         function showDetails(id) {
             fetch(`http://localhost:8080/api/apparitions/${id}`)
                 .then(response => {
@@ -207,8 +210,10 @@
                 })
                 .catch(error => console.error('Error fetching details:', error));
         }
+        */
 
         // Edit an apparition
+        /*
         function editApparition(id) {
             fetch(`http://localhost:8080/api/apparitions/${id}`)
                 .then(response => {
@@ -225,8 +230,10 @@
                 })
                 .catch(error => console.error('Error fetching apparition:', error));
         }
+        */
 
         // Delete an apparition
+        /*
         function deleteApparition(id) {
             if (confirm('Are you sure you want to delete this apparition?')) {
                 fetch(`http://localhost:8080/api/apparitions/${id}`, {
@@ -242,8 +249,10 @@
                 .catch(error => console.error('Error:', error));
             }
         }
+        */
 
         // Handle form submission
+        /*
         document.getElementById('apparition-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const id = document.getElementById('id').value;
@@ -272,14 +281,17 @@
             })
             .catch(error => console.error('Error:', error));
         });
+        */
 
         // Handle search input
+        /*
         document.getElementById('search-input').addEventListener('input', function(event) {
             loadApparitions(event.target.value);
         });
+        */
 
         // Initial load
-        loadApparitions();
+        // loadApparitions();
     </script>
 </body>
 </html>

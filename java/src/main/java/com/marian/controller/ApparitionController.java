@@ -31,4 +31,28 @@ public class ApparitionController {
     public Apparition addApparition(@RequestBody Apparition apparition) {
         return repository.save(apparition);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Apparition> updateApparition(@PathVariable Long id, @RequestBody Apparition updatedApparition) {
+        return repository.findById(id)
+                .map(existingApparition -> {
+                    existingApparition.setName(updatedApparition.getName());
+                    existingApparition.setLocation(updatedApparition.getLocation());
+                    existingApparition.setDate(updatedApparition.getDate());
+                    existingApparition.setApprovalStatus(updatedApparition.getApprovalStatus());
+                    existingApparition.setDescription(updatedApparition.getDescription());
+                    Apparition savedApparition = repository.save(existingApparition);
+                    return ResponseEntity.ok(savedApparition);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteApparition(@PathVariable Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

@@ -37,18 +37,18 @@
         tr:hover {
             background-color: #e0e0e0;
         }
-        .form-container, .details-container {
+        .form-container, .details-container, .search-container {
             max-width: 600px;
             margin: 20px auto;
             padding: 20px;
             background-color: white;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .form-container label {
+        .form-container label, .search-container label {
             display: block;
             margin: 10px 0 5px;
         }
-        .form-container input, .form-container textarea {
+        .form-container input, .form-container textarea, .search-container input {
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
@@ -78,6 +78,10 @@
 </head>
 <body>
     <h1>Marian Apparitions</h1>
+    <div class="search-container">
+        <h2>Search Apparitions</h2>
+        <input type="text" id="search-input" placeholder="Search by name or location">
+    </div>
     <div class="form-container">
         <h2>Add/Edit Apparition</h2>
         <form id="apparition-form">
@@ -117,14 +121,18 @@
         <p><strong>Description:</strong> <span id="detail-description"></span></p>
     </div>
     <script>
-        // Load existing apparitions
-        function loadApparitions() {
+        // Load and filter apparitions
+        function loadApparitions(searchTerm = '') {
             fetch('http://localhost:8080/api/apparitions')
                 .then(response => response.json())
                 .then(data => {
                     const tbody = document.getElementById('apparitions-body');
                     tbody.innerHTML = '';
-                    data.forEach(apparition => {
+                    const filteredData = data.filter(apparition =>
+                        apparition.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        apparition.location.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                    filteredData.forEach(apparition => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${apparition.name}</td>
@@ -188,7 +196,7 @@
                 })
                 .then(response => {
                     if (response.ok) {
-                        loadApparitions();
+                        loadApparitions(document.getElementById('search-input').value);
                     } else {
                         console.error('Error deleting apparition');
                     }
@@ -219,12 +227,17 @@
                 if (response.ok) {
                     document.getElementById('apparition-form').reset();
                     document.getElementById('id').value = '';
-                    loadApparitions();
+                    loadApparitions(document.getElementById('search-input').value);
                 } else {
                     console.error('Error saving apparition');
                 }
             })
             .catch(error => console.error('Error:', error));
+        });
+
+        // Handle search input
+        document.getElementById('search-input').addEventListener('input', function(event) {
+            loadApparitions(event.target.value);
         });
 
         // Initial load

@@ -9,7 +9,7 @@
             margin: 40px;
             background-color: #f9f9f9;
         }
-        h1 {
+        h1, h2 {
             text-align: center;
             color: #333;
         }
@@ -17,7 +17,7 @@
             border-collapse: collapse;
             width: 100%;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 20px auto;
             background-color: white;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
@@ -37,10 +37,57 @@
         tr:hover {
             background-color: #e0e0e0;
         }
+        .form-container, .details-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .form-container label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        .form-container input, .form-container textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+        }
+        .form-container button, .details-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .form-container button:hover, .details-button:hover {
+            background-color: #45a049;
+        }
+        .details-container p {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <h1>Marian Apparitions</h1>
+    <div class="form-container">
+        <h2>Add New Apparition</h2>
+        <form id="apparition-form">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" required>
+            <label for="date">Date</label>
+            <input type="text" id="date" name="date" required>
+            <label for="approvalStatus">Approval Status</label>
+            <input type="text" id="approvalStatus" name="approvalStatus" required>
+            <label for="description">Description</label>
+            <textarea id="description" name="description" required></textarea>
+            <button type="submit">Add Apparition</button>
+        </form>
+    </div>
     <table id="apparitions-table">
         <thead>
             <tr>
@@ -49,28 +96,93 @@
                 <th>Date</th>
                 <th>Approval Status</th>
                 <th>Description</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody id="apparitions-body"></tbody>
     </table>
+    <div class="details-container" id="details-container" style="display: none;">
+        <h2>Apparition Details</h2>
+        <p><strong>Name:</strong> <span id="detail-name"></span></p>
+        <p><strong>Location:</strong> <span id="detail-location"></span></p>
+        <p><strong>Date:</strong> <span id="detail-date"></span></p>
+        <p><strong>Approval Status:</strong> <span id="detail-approvalStatus"></span></p>
+        <p><strong>Description:</strong> <span id="detail-description"></span></p>
+    </div>
     <script>
-        fetch('http://localhost:8080/api/apparitions')
-            .then(response => response.json())
-            .then(data => {
-                const tbody = document.getElementById('apparitions-body');
-                data.forEach(apparition => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${apparition.name}</td>
-                        <td>${apparition.location}</td>
-                        <td>${apparition.date}</td>
-                        <td>${apparition.approvalStatus}</td>
-                        <td>${apparition.description}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
+        // Load existing apparitions
+        function loadApparitions() {
+            fetch('http://localhost:8080/api/apparitions')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('apparitions-body');
+                    tbody.innerHTML = '';
+                    data.forEach(apparition => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${apparition.name}</td>
+                            <td>${apparition.location}</td>
+                            <td>${apparition.date}</td>
+                            <td>${apparition.approvalStatus}</td>
+                            <td>${apparition.description}</td>
+                            <td><button class="details-button" data-id="${apparition.id}">View Details</button></td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                    // Add click handlers for details buttons
+                    document.querySelectorAll('.details-button').forEach(button => {
+                        button.addEventListener('click', () => showDetails(button.dataset.id));
+                    });
+                })
+                .catch(error => console.error('Error fetching apparitions:', error));
+        }
+
+        // Show details for an apparition
+        function showDetails(id) {
+            fetch(`http://localhost:8080/api/apparitions/${id}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Apparition not found');
+                    return response.json();
+                })
+                .then(apparition => {
+                    document.getElementById('detail-name').textContent = apparition.name;
+                    document.getElementById('detail-location').textContent = apparition.location;
+                    document.getElementById('detail-date').textContent = apparition.date;
+                    document.getElementById('detail-approvalStatus').textContent = apparition.approvalStatus;
+                    document.getElementById('detail-description').textContent = apparition.description;
+                    document.getElementById('details-container').style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching details:', error));
+        }
+
+        // Handle form submission
+        document.getElementById('apparition-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                location: document.getElementById('location').value,
+                date: document.getElementById('date').value,
+                approvalStatus: document.getElementById('approvalStatus').value,
+                description: document.getElementById('description').value
+            };
+            fetch('http://localhost:8080/api/apparitions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
             })
-            .catch(error => console.error('Error fetching apparitions:', error));
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('apparition-form').reset();
+                    loadApparitions();
+                } else {
+                    console.error('Error adding apparition');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Initial load
+        loadApparitions();
     </script>
 </body>
 </html>

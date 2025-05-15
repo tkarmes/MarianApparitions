@@ -1,9 +1,10 @@
-package com.marian;
+package com.marian.controller;
 
+import com.marian.Apparition;
+import com.marian.ApparitionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,5 +18,17 @@ public class ApparitionController {
     @GetMapping
     public List<Apparition> getAllApparitions() {
         return repository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Apparition> getApparitionById(@PathVariable Long id) {
+        return repository.findById(id)
+                .map(apparition -> ResponseEntity.ok(apparition))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public Apparition addApparition(@RequestBody Apparition apparition) {
+        return repository.save(apparition);
     }
 }

@@ -13,3 +13,6 @@ target/
 MediaApp-Frontend/node_modules/
 MediaApp-Frontend/.vscode/
 
+
+# Local Netlify folder
+.netlify

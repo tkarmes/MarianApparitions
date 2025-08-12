@@ -2,7 +2,8 @@
   <div>
     <h2>Marian Apparition Sites</h2>
     <p style="color: red;" v-if="error">Error: {{ error }}</p>
-    <p v-if="filteredSites.length === 0 && !error">No matching apparitions found...</p>
+    <p v-if="filteredSites.length === 0 && !error && !loading">No matching apparitions found...</p>
+    <p v-if="loading">Loading apparitions...</p>
     <div class="controls">
       <div class="search">
         <label>Search: </label>
@@ -42,6 +43,7 @@
         <p><strong>Date:</strong> {{ selectedSite.date }}</p>
         <p><strong>Status:</strong> {{ selectedSite.approvalStatus }}</p>
         <p><strong>Description:</strong> {{ selectedSite.description }}</p>
+        <p v-if="selectedSite.imageUrl"><strong>Image:</strong><br><img :src="selectedSite.imageUrl" alt="Apparition Image" class="apparition-image" /></p>
         <button @click="selectedSite = null">Close</button>
       </div>
     </div>
@@ -57,7 +59,8 @@ export default {
       sortKey: 'name',
       sortOrder: 'asc',
       searchQuery: '',
-      selectedSite: null
+      selectedSite: null,
+      loading: true
     };
   },
   computed: {
@@ -85,12 +88,15 @@ export default {
     }
   },
   created() {
+    this.loading = true;
     axios.get('http://localhost:8080/api/apparitions')
       .then(response => {
         this.sites = response.data;
+        this.loading = false;
       })
       .catch(error => {
         this.error = error.message;
+        this.loading = false;
         console.error('Error fetching apparitions:', error);
       });
   },
@@ -216,5 +222,10 @@ button.details {
 }
 button.details:hover {
   background-color: #3b82f6;
+}
+.apparition-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
 }
 </style>

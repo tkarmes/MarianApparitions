@@ -24,6 +24,7 @@
         <th>Date</th>
         <th>Status</th>
         <th>Description</th>
+        <th>Details</th>
       </tr>
       <tr v-for="site in filteredSites" :key="site.id">
         <td>{{ site.name }}</td>
@@ -31,8 +32,19 @@
         <td>{{ site.date }}</td>
         <td>{{ site.approvalStatus }}</td>
         <td>{{ site.description }}</td>
+        <td><button class="details" @click="showDetails(site)">View Details</button></td>
       </tr>
     </table>
+    <div v-if="selectedSite" class="modal">
+      <div class="modal-content">
+        <h3>{{ selectedSite.name }}</h3>
+        <p><strong>Location:</strong> {{ selectedSite.location }}</p>
+        <p><strong>Date:</strong> {{ selectedSite.date }}</p>
+        <p><strong>Status:</strong> {{ selectedSite.approvalStatus }}</p>
+        <p><strong>Description:</strong> {{ selectedSite.description }}</p>
+        <button @click="selectedSite = null">Close</button>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -44,7 +56,8 @@ export default {
       error: null,
       sortKey: 'name',
       sortOrder: 'asc',
-      searchQuery: ''
+      searchQuery: '',
+      selectedSite: null
     };
   },
   computed: {
@@ -87,6 +100,9 @@ export default {
     },
     setOrder(order) {
       this.sortOrder = order;
+    },
+    showDetails(site) {
+      this.selectedSite = site;
     }
   }
 };
@@ -153,5 +169,52 @@ td:nth-child(5) {
   font-family: Arial, sans-serif;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  font-family: Arial, sans-serif;
+}
+.modal-content h3 {
+  color: #1e3a8a;
+  text-align: center;
+}
+.modal-content p {
+  margin: 10px 0;
+}
+.modal-content button {
+  padding: 8px 16px;
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.modal-content button:hover {
+  background-color: #3b82f6;
+}
+button.details {
+  padding: 6px 12px;
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button.details:hover {
+  background-color: #3b82f6;
 }
 </style>

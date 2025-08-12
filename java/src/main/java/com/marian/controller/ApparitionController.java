@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/apparitions")
+@CrossOrigin(origins = "*")
 public class ApparitionController {
 
     @Autowired
@@ -17,6 +18,7 @@ public class ApparitionController {
 
     @GetMapping
     public List<Apparition> getAllApparitions() {
+        System.out.println("Fetching all apparitions...");
         return repository.findAll();
     }
 

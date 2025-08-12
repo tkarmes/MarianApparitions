@@ -1,0 +1,14 @@
+# Use official OpenJDK 23 slim image
+FROM openjdk:23-jdk-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy Maven build output
+COPY target/*.jar app.jar
+
+# Expose port (Render assigns $PORT)
+EXPOSE 8080
+
+# Run the app
+ENTRYPOINT ["java", "-Dserver.port=$PORT", "-jar", "app.jar"]

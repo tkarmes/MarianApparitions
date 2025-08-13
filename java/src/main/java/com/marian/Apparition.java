@@ -15,6 +15,7 @@ public class Apparition {
     private String date;
     private String approvalStatus;
     private String description;
+    private String imageUrl;
 
     public Apparition() {}
 
@@ -30,4 +31,6 @@ public class Apparition {
     public void setApprovalStatus(String approvalStatus) { this.approvalStatus = approvalStatus; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }

@@ -43,8 +43,12 @@
         <p><strong>Date:</strong> {{ selectedSite.date }}</p>
         <p><strong>Status:</strong> {{ selectedSite.approvalStatus }}</p>
         <p><strong>Description:</strong> {{ selectedSite.description }}</p>
-        <p v-if="selectedSite.imageUrl"><strong>Image:</strong><br><img :src="selectedSite.imageUrl" alt="Apparition Image" class="apparition-image" /></p>
-        <button @click="selectedSite = null">Close</button>
+        <p v-if="selectedSite.imageUrl && !imageError">
+          <strong>Image:</strong><br>
+          <img :src="selectedSite.imageUrl" alt="Apparition Image" class="apparition-image" @error="handleImageError" />
+        </p>
+        <p v-else><strong>Image:</strong> No image available</p>
+        <button @click="selectedSite = null; imageError = false">Close</button>
       </div>
     </div>
   </div>
@@ -60,7 +64,8 @@ export default {
       sortOrder: 'asc',
       searchQuery: '',
       selectedSite: null,
-      loading: true
+      loading: true,
+      imageError: false
     };
   },
   computed: {
@@ -108,7 +113,11 @@ export default {
       this.sortOrder = order;
     },
     showDetails(site) {
-      this.selectedSite = site;
+      this.selectedSite = { ...site };
+      this.imageError = false;
+    },
+    handleImageError() {
+      this.imageError = true;
     }
   }
 };
@@ -192,7 +201,7 @@ td:nth-child(5) {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  max-width: 500px;
+  max-width: 600px;
   width: 90%;
   font-family: Arial, sans-serif;
 }
@@ -220,12 +229,25 @@ button.details {
   border: none;
   cursor: pointer;
 }
+.modal-content button:hover {
+  background-color: #3b82f6;
+}
+button.details {
+  padding: 6px 12px;
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
 button.details:hover {
   background-color: #3b82f6;
 }
 .apparition-image {
   max-width: 100%;
+  width: 400px;
   height: auto;
   border-radius: 4px;
+  margin-top: 10px;
+  display: block;
 }
 </style>

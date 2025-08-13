@@ -56,6 +56,15 @@
           <span v-if="!imageLoaded && !imageError" class="image-placeholder">Loading image...</span>
         </p>
         <p v-else><strong>Image:</strong> No image available</p>
+        <p v-if="selectedSite.location">
+          <strong>Map:</strong><br>
+          <a
+            :href="`https://www.openstreetmap.org/search?query=${encodeURIComponent(selectedSite.location)}`"
+            target="_blank"
+            class="map-link"
+          >View {{ selectedSite.location }} on OpenStreetMap</a>
+        </p>
+        <p v-else><strong>Map:</strong> No location available</p>
         <button @click="selectedSite = null; imageError = false; imageLoaded = false">Close</button>
       </div>
     </div>
@@ -266,5 +275,14 @@ button.details:hover {
 .image-placeholder {
   color: #666;
   font-style: italic;
+}
+.map-link {
+  color: #1e3a8a;
+  text-decoration: none;
+  font-weight: bold;
+}
+.map-link:hover {
+  color: #3b82f6;
+  text-decoration: underline;
 }
 </style>

@@ -14,8 +14,8 @@
         <button :class="{ active: sortKey === 'name' }" @click="setSort('name')">Name</button>
         <button :class="{ active: sortKey === 'date' }" @click="setSort('date')">Date</button>
         <label>Order: </label>
-        <button :class="{ active: sortOrder === 'asc' }" @click="setOrder('asc')">Ascending</button>
-        <button :class="{ active: sortOrder === 'desc' }" @click="setOrder('desc')">Descending</button>
+        <button :class="{ active: sortOrder === 'asc' }" @click="setSortOrder('asc')">Ascending</button>
+        <button :class="{ active: sortOrder === 'desc' }" @click="setSortOrder('desc')">Descending</button>
       </div>
     </div>
     <table>
@@ -36,7 +36,7 @@
         <td><button class="details" @click="showDetails(site)">View Details</button></td>
       </tr>
     </table>
-    <div v-if="selectedSite" class="modal">
+    <div v-if="selectedSite" class="modal" :class="{ 'fade-in': selectedSite }">
       <div class="modal-content">
         <h3>{{ selectedSite.name }}</h3>
         <p><strong>Location:</strong> {{ selectedSite.location }}</p>
@@ -45,10 +45,18 @@
         <p><strong>Description:</strong> {{ selectedSite.description }}</p>
         <p v-if="selectedSite.imageUrl && !imageError">
           <strong>Image:</strong><br>
-          <img :src="selectedSite.imageUrl" alt="Apparition Image" class="apparition-image" @error="handleImageError" />
+          <img
+            :src="selectedSite.imageUrl"
+            alt="Apparition Image"
+            class="apparition-image"
+            @error="handleImageError"
+            @load="imageLoaded = true"
+            :class="{ 'image-loading': !imageLoaded }"
+          />
+          <span v-if="!imageLoaded && !imageError" class="image-placeholder">Loading image...</span>
         </p>
         <p v-else><strong>Image:</strong> No image available</p>
-        <button @click="selectedSite = null; imageError = false">Close</button>
+        <button @click="selectedSite = null; imageError = false; imageLoaded = false">Close</button>
       </div>
     </div>
   </div>
@@ -65,7 +73,8 @@ export default {
       searchQuery: '',
       selectedSite: null,
       loading: true,
-      imageError: false
+      imageError: false,
+      imageLoaded: false
     };
   },
   computed: {
@@ -109,15 +118,17 @@ export default {
     setSort(key) {
       this.sortKey = key;
     },
-    setOrder(order) {
+    setSortOrder(order) {
       this.sortOrder = order;
     },
     showDetails(site) {
       this.selectedSite = { ...site };
       this.imageError = false;
+      this.imageLoaded = false;
     },
     handleImageError() {
       this.imageError = true;
+      this.imageLoaded = false;
     }
   }
 };
@@ -196,6 +207,11 @@ td:nth-child(5) {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.modal.fade-in {
+  opacity: 1;
 }
 .modal-content {
   background: white;
@@ -204,6 +220,7 @@ td:nth-child(5) {
   max-width: 600px;
   width: 90%;
   font-family: Arial, sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .modal-content h3 {
   color: #1e3a8a;
@@ -229,16 +246,6 @@ button.details {
   border: none;
   cursor: pointer;
 }
-.modal-content button:hover {
-  background-color: #3b82f6;
-}
-button.details {
-  padding: 6px 12px;
-  background-color: #1e3a8a;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
 button.details:hover {
   background-color: #3b82f6;
 }
@@ -249,5 +256,15 @@ button.details:hover {
   border-radius: 4px;
   margin-top: 10px;
   display: block;
+  border: 1px solid #e0e0e0;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+.image-loading {
+  opacity: 0;
+}
+.image-placeholder {
+  color: #666;
+  font-style: italic;
 }
 </style>

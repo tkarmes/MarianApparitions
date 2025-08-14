@@ -95,10 +95,29 @@ h2 {
   margin: 0 auto;
   padding: 20px 0;
 }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 120px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #1e3a8a;
+}
 .timeline-item {
   display: flex;
   margin-bottom: 20px;
   position: relative;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 118px;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  background: #1e3a8a;
+  border-radius: 50%;
 }
 .timeline-date {
   width: 100px;
@@ -107,6 +126,8 @@ h2 {
   text-align: right;
   padding-right: 20px;
   font-family: Arial, sans-serif;
+  position: relative;
+  top: 5px;
 }
 .timeline-content {
   flex: 1;

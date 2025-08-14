@@ -3,8 +3,12 @@
     <header>
       <h1>Marian Apparitions</h1>
     </header>
+    <nav>
+      <router-link to="/">Apparition List</router-link> |
+      <router-link to="/timeline">Timeline</router-link>
+    </nav>
     <main>
-      <ApparitionList />
+      <router-view />
     </main>
     <footer>
       <p>"Be original, not a photocopy." - Blessed Carlo Acutis</p>
@@ -12,11 +16,31 @@
   </div>
 </template>
 <script>
-import ApparitionList from './components/ApparitionList.vue';
-export default {
-  components: { ApparitionList }
-};
+export default {}
 </script>
 <style>
-header, footer { text-align: center; padding: 20px; background: #1e3a8a; color: white; }
+header, footer {
+  text-align: center;
+  padding: 20px;
+  background: #1e3a8a;
+  color: white;
+}
+nav {
+  text-align: center;
+  margin: 10px 0;
+}
+nav a {
+  color: #1e3a8a;
+  text-decoration: none;
+  margin: 0 10px;
+  font-weight: bold;
+}
+nav a:hover {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+main {
+  margin: 0 auto;
+  max-width: 1200px;
+}
 </style>

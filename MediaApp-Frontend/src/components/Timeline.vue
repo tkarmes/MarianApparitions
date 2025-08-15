@@ -102,32 +102,34 @@ h2 {
   top: 0;
   bottom: 0;
   width: 4px;
-  background: #1e3a8a;
+  background: linear-gradient(to bottom, #1e3a8a, #3b82f6);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 .timeline-item {
   display: flex;
   margin-bottom: 20px;
   position: relative;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in forwards;
 }
+.timeline-item:nth-child(1) { animation-delay: 0.1s; }
+.timeline-item:nth-child(2) { animation-delay: 0.2s; }
+.timeline-item:nth-child(3) { animation-delay: 0.3s; }
 .timeline-item::before {
   content: '';
   position: absolute;
-  left: 118px;
+  left: 116px;
   top: 10px;
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
   background: #1e3a8a;
+  border: 2px solid #fff;
   border-radius: 50%;
+  z-index: 1;
+  transition: transform 0.3s ease;
 }
-.timeline-date {
-  width: 100px;
-  font-weight: bold;
-  color: #1e3a8a;
-  text-align: right;
-  padding-right: 20px;
-  font-family: Arial, sans-serif;
-  position: relative;
-  top: 5px;
+.timeline-item:hover::before {
+  transform: scale(1.2);
 }
 .timeline-content {
   flex: 1;
@@ -137,6 +139,11 @@ h2 {
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.timeline-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .timeline-content h3 {
   color: #1e3a8a;
@@ -171,5 +178,9 @@ h2 {
 .map-link:hover {
   color: #3b82f6;
   text-decoration: underline;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>

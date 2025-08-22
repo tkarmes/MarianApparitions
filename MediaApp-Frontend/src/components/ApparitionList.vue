@@ -9,6 +9,11 @@
         <label>Search: </label>
         <input v-model="searchQuery" placeholder="Search by name or location" />
       </div>
+      <div class="filter-controls">
+        <label>Filter by Approval: </label>
+        <button :class="{ active: approvalFilter === 'all' }" @click="approvalFilter = 'all'">All</button>
+        <button :class="{ active: approvalFilter === 'approved' }" @click="approvalFilter = 'approved'">Approved Only</button>
+      </div>
       <div class="sort-controls">
         <label>Sort by: </label>
         <button :class="{ active: sortKey === 'name' }" @click="setSort('name')">Name</button>
@@ -47,25 +52,38 @@
           <strong>Image:</strong><br>
           <img
             :src="selectedSite.imageUrl"
-            alt="Apparition Image"
+            :alt="`Image of ${selectedSite.name}`"
             class="apparition-image"
             @error="handleImageError"
             @load="imageLoaded = true"
             :class="{ 'image-loading': !imageLoaded }"
+            loading="lazy"
           />
           <span v-if="!imageLoaded && !imageError" class="image-placeholder">Loading image...</span>
         </p>
-        <p v-else><strong>Image:</strong> No image available</p>
+        <p v-else>
+          <strong>Image:</strong><br>
+          <img
+            src="https://placehold.co/400x300?text=No+Image"
+            :alt="`No image for ${selectedSite.name}`"
+            class="apparition-image"
+          />
+          <span v-if="!selectedSite.imageUrl" class="image-placeholder">No image URL provided</span>
+          <span v-if="imageError" class="image-placeholder">Failed to load image</span>
+        </p>
         <p v-if="selectedSite.location">
           <strong>Map:</strong><br>
-          <a
-            :href="`https://www.openstreetmap.org/search?query=${encodeURIComponent(selectedSite.location)}`"
-            target="_blank"
-            class="map-link"
-          >View {{ selectedSite.location }} on OpenStreetMap</a>
+          <iframe
+            :src="getMapUrl(selectedSite.location)"
+            class="map-iframe"
+            :title="`Map of ${selectedSite.name} location`"
+            @load="mapLoaded = true"
+            allowfullscreen
+          ></iframe>
+          <span v-if="!mapLoaded" class="map-placeholder">Loading map...</span>
         </p>
         <p v-else><strong>Map:</strong> No location available</p>
-        <button @click="selectedSite = null; imageError = false; imageLoaded = false">Close</button>
+        <button class="close-button" @click="closeModal">Close</button>
       </div>
     </div>
   </div>
@@ -83,7 +101,9 @@ export default {
       selectedSite: null,
       loading: true,
       imageError: false,
-      imageLoaded: false
+      imageLoaded: false,
+      mapLoaded: false,
+      approvalFilter: 'all'
     };
   },
   computed: {
@@ -102,9 +122,13 @@ export default {
       });
     },
     filteredSites() {
+      let result = this.sortedSites;
+      if (this.approvalFilter === 'approved') {
+        result = result.filter(site => site.approvalStatus.toLowerCase() === 'approved');
+      }
       const query = this.searchQuery.toLowerCase().trim();
-      if (!query) return this.sortedSites;
-      return this.sortedSites.filter(site =>
+      if (!query) return result;
+      return result.filter(site =>
         site.name.toLowerCase().includes(query) ||
         site.location.toLowerCase().includes(query)
       );
@@ -114,6 +138,7 @@ export default {
     this.loading = true;
     axios.get('http://localhost:8080/api/apparitions')
       .then(response => {
+        console.log('API response:', response.data); // Debug API data
         this.sites = response.data;
         this.loading = false;
       })
@@ -134,54 +159,95 @@ export default {
       this.selectedSite = { ...site };
       this.imageError = false;
       this.imageLoaded = false;
+      this.mapLoaded = false;
+      console.log('Selected site:', this.selectedSite); // Debug log
+      console.log('Image URL:', this.selectedSite.imageUrl); // Debug imageUrl
+      document.body.classList.add('modal-open');
+    },
+    closeModal() {
+      this.selectedSite = null;
+      this.imageError = false;
+      this.imageLoaded = false;
+      this.mapLoaded = false;
+      document.body.classList.remove('modal-open');
     },
     handleImageError() {
       this.imageError = true;
       this.imageLoaded = false;
+      console.error('Image failed to load:', this.selectedSite.imageUrl);
+    },
+    getMapUrl(location) {
+      console.log('Location:', location);
+      const mapUrls = {
+        'Fatima, Portugal': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.1234!2d-8.6527!3d39.6172!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDM3JzAyLjkiTiA4wrA0MScwOS4zIlc!5e0!3m2!1sen!2us!4v1697051234567',
+        'Mexico City, Mexico': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.3456!2d-99.1182!3d19.4840!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDI5JzAyLjQiTiA5OcKwMDcnMDUuNSJX!5e0!3m2!1sen!2us!4v1697051234568',
+        'Lourdes, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2907.1234!2d-0.0461!3d43.0942!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDA1JzM5LjEiTiAwwrAwMicyNy44IkU!5e0!3m2!1sen!2us!4v1697051234569',
+        'Banneux, Belgium': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2526.1234!2d5.7356!3d50.5388!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDMyJzE5LjciTiA1wrA0NCcwNy43IkU!5e0!3m2!1sen!2us!4v1697051234570',
+        'Beauraing, Belgium': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2534.1234!2d4.9600!3d50.1100!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDA2JzM2LjAiTiA0wrA1NyczNi4wIkU!5e0!3m2!1sen!2us!4v1697051234571',
+        'Pontmain, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2640.1234!2d-0.5400!3d48.4400!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDjCsDI2JzI0LjAiTiAwwrAwMicyNC40Ilc!5e0!3m2!1sen!2us!4v1697051234572',
+        'Knock, Ireland': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2378.1234!2d-8.9035!3d53.7950!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTPCsDQ3JzQyLjAiTiA4wrA1NCcxMi62Ilc!5e0!3m2!1sen!2us!4v1697051234573',
+        'Laus, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2789.1234!2d6.1600!3d44.6600!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDTCsDM5JzM2LjAiNiA2wrAwOSczNi4wIkU!5e0!3m2!1sen!2us!4v1697051234574',
+        'Paris, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.1234!2d2.3400!3d48.8500!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDjCsDUxJzAwLjAiNiAywrAyMCcyNC4wIkU!5e0!3m2!1sen!2us!4v1697051234575',
+        'La Salette, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2790.1234!2d5.9800!3d44.8600!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDTCsDUxJzM2LjAiNiA1wrA1OCc0OC4wIkU!5e0!3m2!1sen!2us!4v1697051234576'
+      };
+      return mapUrls[location] || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d48389.6617!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMDDCsDAwJzAwLjAiNiAwwrAwMCcwMC4wIkU!5e0!3m2!1sen!2us!4v1697051234577';
     }
   }
 };
 </script>
 <style>
+body.modal-open {
+  overflow: hidden;
+}
+
 table {
   margin: 20px auto;
   border-collapse: collapse;
   width: 90%;
   font-family: Arial, sans-serif;
 }
+
 th, td {
   padding: 12px;
   text-align: left;
   border: 1px solid #e0e0e0;
   word-wrap: break-word;
 }
+
 th {
   background-color: #1e3a8a;
   color: white;
   font-weight: bold;
 }
+
 tr:nth-child(even) {
   background-color: #f9fafb;
 }
+
 tr:hover {
   background-color: #e5e7eb;
 }
+
 h2 {
   color: #1e3a8a;
   font-family: Arial, sans-serif;
   text-align: center;
   margin-bottom: 20px;
 }
+
 td:nth-child(5) {
   max-width: 300px;
 }
+
 .controls {
   text-align: center;
   margin: 10px 0;
 }
+
 .sort-controls {
   margin-top: 10px;
 }
+
 .sort-controls button {
   margin: 0 5px;
   padding: 6px 12px;
@@ -190,14 +256,40 @@ td:nth-child(5) {
   cursor: pointer;
   font-family: Arial, sans-serif;
 }
+
 .sort-controls button.active {
   background-color: #1e3a8a;
   color: white;
 }
+
 .sort-controls button:hover {
   background-color: #3b82f6;
   color: white;
 }
+
+.filter-controls {
+  margin: 10px 0;
+}
+
+.filter-controls button {
+  margin: 0 5px;
+  padding: 6px 12px;
+  background-color: #e5e7eb;
+  border: none;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+}
+
+.filter-controls button.active {
+  background-color: #1e3a8a;
+  color: white;
+}
+
+.filter-controls button:hover {
+  background-color: #3b82f6;
+  color: white;
+}
+
 .search input {
   padding: 6px 12px;
   width: 200px;
@@ -205,6 +297,7 @@ td:nth-child(5) {
   border: 1px solid #e0e0e0;
   border-radius: 4px;
 }
+
 .modal {
   position: fixed;
   top: 0;
@@ -218,71 +311,127 @@ td:nth-child(5) {
   z-index: 1000;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
+  overflow-y: auto;
+  padding: 20px;
 }
+
 .modal.fade-in {
   opacity: 1;
 }
+
 .modal-content {
   background: white;
   padding: 20px;
   border-radius: 8px;
   max-width: 600px;
   width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
   font-family: Arial, sans-serif;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
 }
+
 .modal-content h3 {
   color: #1e3a8a;
   text-align: center;
+  margin: 0 0 10px;
 }
+
 .modal-content p {
   margin: 10px 0;
 }
-.modal-content button {
+
+.modal-content button.close-button {
+  position: sticky;
+  bottom: 10px;
+  align-self: center;
   padding: 8px 16px;
   background-color: #1e3a8a;
   color: white;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 16px;
+  z-index: 10;
 }
-.modal-content button:hover {
+
+.modal-content button.close-button:hover {
   background-color: #3b82f6;
 }
-button.details {
-  padding: 6px 12px;
-  background-color: #1e3a8a;
-  color: white;
-  border: none;
-  cursor: pointer;
+
+.modal-content button.close-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
-button.details:hover {
-  background-color: #3b82f6;
-}
+
 .apparition-image {
   max-width: 100%;
-  width: 400px;
+  width: auto;
+  max-height: 300px;
   height: auto;
   border-radius: 4px;
-  margin-top: 10px;
+  margin: 10px auto;
   display: block;
   border: 1px solid #e0e0e0;
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
+  object-fit: contain;
 }
+
 .image-loading {
   opacity: 0;
 }
+
 .image-placeholder {
   color: #666;
   font-style: italic;
+  text-align: center;
+  margin: 10px 0;
 }
-.map-link {
-  color: #1e3a8a;
-  text-decoration: none;
-  font-weight: bold;
+
+.map-iframe {
+  width: 100%;
+  max-width: 400px;
+  height: 300px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin: 10px auto;
+  display: block;
+  aspect-ratio: 4 / 3;
 }
-.map-link:hover {
-  color: #3b82f6;
-  text-decoration: underline;
+
+.map-placeholder {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  margin: 10px 0;
+}
+
+@media (max-width: 600px) {
+  .modal {
+    padding: 10px;
+  }
+
+  .modal-content {
+    width: 95%;
+    max-height: 85vh;
+    padding: 15px;
+  }
+
+  .apparition-image {
+    max-height: 200px;
+    width: auto;
+  }
+
+  .map-iframe {
+    max-width: 100%;
+    height: 200px;
+    aspect-ratio: 4 / 3;
+  }
 }
 </style>

@@ -95,20 +95,22 @@ export default {
       this.imageLoaded[id] = false;
     },
     getMapUrl(location) {
-      const mapUrls = {
-        'Fatima, Portugal': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.1234!2d-8.6527!3d39.6172!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDM3JzAyLjkiTiA4wrA0MScwOS4zIlc!5e0!3m2!1sen!2sus!4v1697051234567',
-        'Mexico City, Mexico': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.3456!2d-99.1182!3d19.4840!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDI5JzAyLjQiTiA5OcKwMDcnMDUuNSJX!5e0!3m2!1sen!2sus!4v1697051234568',
-        'Lourdes, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2907.1234!2d-0.0461!3d43.0942!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDA1JzM5LjEiTiAwwrAwMicyNy44IkU!5e0!3m2!1sen!2sus!4v1697051234569',
-        'Banneux, Belgium': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2526.1234!2d5.7356!3d50.5388!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDMyJzE5LjciTiA1wrA0NCcwNy43IkU!5e0!3m2!1sen!2sus!4v1697051234570',
-        'Beauraing, Belgium': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2534.1234!2d4.9600!3d50.1100!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDA2JzM2LjAiTiA0wrA1NyczNi4wIkU!5e0!3m2!1sen!2sus!4v1697051234571',
-        'Pontmain, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2640.1234!2d-0.5400!3d48.4400!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDjCsDI2JzI0LjAiTiAwwrAwMicyNC40Ilc!5e0!3m2!1sen!2sus!4v1697051234572',
-        'Knock, Ireland': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2378.1234!2d-8.9035!3d53.7950!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTPCsDQ3JzQyLjAiTiA4wrA1NCcxMi42Ilc!5e0!3m2!1sen!2sus!4v1697051234573',
-        'Laus, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2789.1234!2d6.1600!3d44.6600!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDTCsDM5JzM2LjAiTiA2wrAwOSczNi4wIkU!5e0!3m2!1sen!2sus!4v1697051234574',
-        'Paris, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.1234!2d2.3400!3d48.8500!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDjCsDUxJzAwLjAiNiAywrAyMCcyNC4wIkU!5e0!3m2!1sen!2us!4v1697051234575',
-        'La Salette, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2790.1234!2d5.9800!3d44.8600!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDTCsDUxJzM2LjAiNiA1wrA1OCc0OC4wIkU!5e0!3m2!1sen!2us!4v1697051234576'
-      };
-      return mapUrls[location] || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d48389.6617!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMDDCsDAwJzAwLjAiNiAwwrAwMCcwMC4wIkU!5e0!3m2!1sen!2us!4v1697051234577';
-    }
+  const mapUrls = {
+    'Fatima, Portugal': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.1234!2d-8.6527!3d39.6172!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDM3JzAyLjkiTiA4wrA0MScwOS4zIlc!5e0!3m2!1sen!2sus!4v1697051234567',
+    'Mexico City, Mexico': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3762.3456!2d-99.1182!3d19.4840!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDI5JzAyLjQiTiA5OcKwMDcnMDUuNSJX!5e0!3m2!1sen!2sus!4v1697051234568',
+    'Lourdes, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2907.1234!2d-0.0461!3d43.0942!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDA1JzM5LjEiTiAwwrAwMicyNy44IkU!5e0!3m2!1sen!2sus!4v1697051234569',
+    'Banneux, Belgium': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2526.1234!2d5.7356!3d50.5388!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDMyJzE5LjciTiA1wrA0NCcwNy43IkU!5e0!3m2!1sen!2sus!4v1697051234570',
+    'Beauraing, Belgium': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2534.1234!2d4.9600!3d50.1100!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDA2JzM2LjAiTiA0wrA1NyczNi4wIkU!5e0!3m2!1sen!2sus!4v1697051234571',
+    'Pontmain, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2640.1234!2d-0.5400!3d48.4400!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDjCsDI2JzI0LjAiTiAwwrAwMicyNC40Ilc!5e0!3m2!1sen!2sus!4v1697051234572',
+    'Knock, Ireland': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2378.1234!2d-8.9035!3d53.7950!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTPCsDQ3JzQyLjAiTiA4wrA1NCcxMi42Ilc!5e0!3m2!1sen!2sus!4v1697051234573',
+    'Laus, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2789.1234!2d6.1600!3d44.6600!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDTCsDM5JzM2LjAiTiA2wrAwOSczNi4wIkU!5e0!3m2!1sen!2sus!4v1697051234574',
+    'Paris, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.1234!2d2.3400!3d48.8500!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDjCsDUxJzAwLjAiTiAywrAyMCcyNC4wIkU!5e0!3m2!1sen!2sus!4v1697051234575',
+    'La Salette, France': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2790.1234!2d5.9800!3d44.8600!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDTCsDUxJzM2LjAiTiA1wrA1OCc0OC4wIkU!5e0!3m2!1sen!2sus!4v1697051234576',
+    'Medjugorje, Bosnia and Herzegovina': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2878.1234!2d17.6778!3d43.1900!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDExJzI0LjAiTiAxN8KwNDAnNDAuMSJF!5e0!3m2!1sen!2sus!4v1697051234578',
+    'Akita, Japan': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3120.1234!2d140.1497!3d39.7596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDQ1JzM0LjYiTiAxNDDCsDA4JzU4LjkiRQ!5e0!3m2!1sen!2sus!4v1697051234579'
+  };
+  return mapUrls[location] || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d48389.6617!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMDDCsDAwJzAwLjAiTiAwwrAwMCcwMC4wIkU!5e0!3m2!1sen!2sus!4v1697051234577';
+}
   }
 };
 </script>

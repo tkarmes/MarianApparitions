@@ -121,18 +121,21 @@ export default {
         }
       });
     },
-    filteredSites() {
-      let result = this.sortedSites;
-      if (this.approvalFilter === 'approved') {
-        result = result.filter(site => site.approvalStatus.toLowerCase() === 'approved');
-      }
-      const query = this.searchQuery.toLowerCase().trim();
-      if (!query) return result;
-      return result.filter(site =>
-        site.name.toLowerCase().includes(query) ||
-        site.location.toLowerCase().includes(query)
-      );
-    }
+   filteredSites() {
+  let result = this.sortedSites;
+  if (this.approvalFilter === 'approved') {
+    result = result.filter(site => {
+      const status = site.approvalStatus ? site.approvalStatus.toLowerCase() : '';
+      return status.includes('approved') || status.includes('vatican-approved');
+    });
+  }
+  const query = this.searchQuery.toLowerCase().trim();
+  if (!query) return result;
+  return result.filter(site =>
+    site.name.toLowerCase().includes(query) ||
+    site.location.toLowerCase().includes(query)
+  );
+}
   },
   created() {
     this.loading = true;

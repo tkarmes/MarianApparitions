@@ -64,17 +64,20 @@ export default {
   },
   computed: {
     sortedSites() {
-      let result = [...this.sites].sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        if (!dateA.getTime() || !dateB.getTime()) return 0;
-        return dateA - dateB;
-      });
-      if (this.approvalFilter === 'approved') {
-        result = result.filter(site => site.approvalStatus.toLowerCase() === 'approved');
-      }
-      return result;
-    }
+  let result = [...this.sites].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    if (!dateA.getTime() || !dateB.getTime()) return 0;
+    return dateA - dateB;
+  });
+  if (this.approvalFilter === 'approved') {
+    result = result.filter(site => {
+      const status = site.approvalStatus ? site.approvalStatus.toLowerCase() : '';
+      return status.includes('approved') || status.includes('vatican-approved');
+    });
+  }
+  return result;
+}
   },
   created() {
     this.loading = true;
